@@ -10,13 +10,15 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Login to npm
-      run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
   release:
     needs: build
     runs-on: ubuntu-latest
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Publish to npm
-      run: npm publish
+    - name: Publish
+      run: |
+          npm config set //registry.npmjs.org/:_authToken ${NPM_TOKEN}
+          npm publish --ignore-scripts
+      env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
